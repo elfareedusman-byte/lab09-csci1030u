@@ -9,41 +9,60 @@
 
 
 def two_sum(nums, target):
-    # Outline (write your plan here first):
-    #   ...
-    # TODO: return the indices [i, j] (i < j) of the two numbers in `nums` that add up
-    #   to `target`. Assume there is exactly one answer.
-    pass
+    # Outline:
+    # Keep a dictionary mapping each number we've seen so far to its index.
+    # As we loop through nums, calculate the complement (target - num).
+    # If the complement is already in the dictionary, return [seen[complement], i].
+    seen = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
 
 
 def max_profit(prices):
     # Outline:
-    #   ...
-    # TODO: `prices[i]` is a stock price on day i. Return the most profit obtainable by
-    #   buying on one day and selling on a LATER day. If no profit is possible, return 0.
-    pass
+    # Track the lowest stock price seen so far and the maximum profit found.
+    # For each day's price, update the minimum price if it's lower, or check if
+    # selling today beats our best profit so far.
+    min_price = float("inf")
+    best_profit = 0
+    for price in prices:
+        if price < min_price:
+            min_price = price
+        elif price - min_price > best_profit:
+            best_profit = price - min_price
+    return best_profit
 
 
 def max_subarray(nums):
     # Outline:
-    #   ...
-    # TODO: return the largest sum of any contiguous (in-a-row) block of numbers in
-    #   `nums`. The list has at least one number.
-    pass
+    # Track the running sum of the current contiguous subarray and the overall max sum.
+    # At each number, decide whether to extend the current subarray or start fresh
+    # at the current number, then update the overall best sum.
+    current_sum = nums[0]
+    best_sum = nums[0]
+    for num in nums[1:]:
+        current_sum = max(num, current_sum + num)
+        best_sum = max(best_sum, current_sum)
+    return best_sum
 
 
-def is_balanced(s):   # Part 4 - stretch (optional)
+def is_balanced(s):
     # Outline:
-    #   ...
-    # TODO: return True if every bracket in `s` is closed correctly and in the right
-    #   order. The brackets are ( ) [ ] { }. (Hint: a list used as a stack works well.)
-    pass
-
-
-def main():
-    # Optional scratch space - try your functions here, then run: python lab09.py
-    # print(two_sum([2, 7, 11, 15], 9))   # [0, 1]
-    pass
+    # Use a list as a stack to push opening brackets.
+    # When a closing bracket appears, pop the top of the stack and verify it matches.
+    # At the end, return True only if the stack is completely empty.
+    stack = []
+    matching = {")": "(", "]": "[", "}": "{"}
+    for ch in s:
+        if ch in "([{":
+            stack.append(ch)
+        elif ch in matching:
+            if not stack or stack.pop() != matching[ch]:
+                return False
+    return len(stack) == 0
 
 
 if __name__ == "__main__":
